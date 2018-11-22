@@ -23,7 +23,7 @@ __date__ = '22 Nov 2018'
 
 __version__ = '.'.join(__version_info__)
 __author__ = 'Marvin Thielk; Martijn Vermaat'
-__contact__ = 'marvin.thielk@gmail.com;martijn@vermaat.name'
+__contact__ = 'marvin.thielk@gmail.com, martijn@vermaat.name'
 __homepage__ = 'https://github.com/MarvinT/calmap'
 
 _pandas_18 = StrictVersion(pd.__version__) >= StrictVersion('0.18')
