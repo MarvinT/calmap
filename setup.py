@@ -4,7 +4,7 @@ from setuptools import setup
 install_requires = ['matplotlib', 'numpy', 'pandas']
 
 try:
-    with open('README.rst') as readme:
+    with open('README.md') as readme:
         long_description = readme.read()
 except IOError:
     long_description = 'See https://pypi.python.org/pypi/calmap'
