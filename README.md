@@ -4,6 +4,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Django.svg)
 [![Build Status](https://travis-ci.com/MarvinT/calmap.svg?branch=master)](https://travis-ci.com/MarvinT/calmap)
 [![Coverage Status](https://coveralls.io/repos/github/MarvinT/calmap/badge.svg?branch=master)](https://coveralls.io/github/MarvinT/calmap?branch=master)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://pepy.tech/badge/calmap)](https://pepy.tech/project/calmap)
 
