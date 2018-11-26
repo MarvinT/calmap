@@ -1,7 +1,7 @@
 # Calendar heatmaps from Pandas time series data
 ------------------------------------------------
 [![PyPI version](https://badge.fury.io/py/calmap.svg)](https://badge.fury.io/py/calmap)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Django.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/calmap.svg)
 [![Build Status](https://travis-ci.com/MarvinT/calmap.svg?branch=master)](https://travis-ci.com/MarvinT/calmap)
 [![Coverage Status](https://coveralls.io/repos/github/MarvinT/calmap/badge.svg?branch=master)](https://coveralls.io/github/MarvinT/calmap?branch=master)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
