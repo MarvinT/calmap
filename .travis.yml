@@ -5,12 +5,15 @@ python:
 - '2.7'
 - '3.4'
 - '3.5'
+- '3.6'
 install:
 - pip install -r tests/requirements.txt -r doc/requirements.txt
 - python setup.py install
 script:
-- py.test
+- pytest --cov=calmap
 - pushd doc && make html && popd
+after_success:
+- coveralls
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel --universal
