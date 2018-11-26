@@ -17,23 +17,35 @@ import numpy as np
 import pandas as pd
 from distutils.version import StrictVersion
 
-__version_info__ = ('0', '0', '8', 'dev')
-__date__ = '22 Nov 2018'
+__version_info__ = ("0", "0", "8", "dev")
+__date__ = "22 Nov 2018"
 
 
-__version__ = '.'.join(__version_info__)
-__author__ = 'Marvin Thielk; Martijn Vermaat'
-__contact__ = 'marvin.thielk@gmail.com, martijn@vermaat.name'
-__homepage__ = 'https://github.com/MarvinT/calmap'
+__version__ = ".".join(__version_info__)
+__author__ = "Marvin Thielk; Martijn Vermaat"
+__contact__ = "marvin.thielk@gmail.com, martijn@vermaat.name"
+__homepage__ = "https://github.com/MarvinT/calmap"
 
-_pandas_18 = StrictVersion(pd.__version__) >= StrictVersion('0.18')
+_pandas_18 = StrictVersion(pd.__version__) >= StrictVersion("0.18")
 
 
-def yearplot(data, year=None, how='sum', vmin=None, vmax=None, cmap='Reds',
-             fillcolor='whitesmoke', linewidth=1, linecolor=None,
-             daylabels=calendar.day_abbr[:], dayticks=True,
-             monthlabels=calendar.month_abbr[1:], monthticks=True, ax=None,
-             **kwargs):
+def yearplot(
+    data,
+    year=None,
+    how="sum",
+    vmin=None,
+    vmax=None,
+    cmap="Reds",
+    fillcolor="whitesmoke",
+    linewidth=1,
+    linecolor=None,
+    daylabels=calendar.day_abbr[:],
+    dayticks=True,
+    monthlabels=calendar.month_abbr[1:],
+    monthticks=True,
+    ax=None,
+    **kwargs
+):
     """
     Plot one year from a timeseries as a calendar heatmap.
 
@@ -128,9 +140,9 @@ def yearplot(data, year=None, how='sum', vmin=None, vmax=None, cmap='Reds',
     else:
         # Sample by day.
         if _pandas_18:
-            by_day = data.resample('D').agg(how)
+            by_day = data.resample("D").agg(how)
         else:
-            by_day = data.resample('D', how=how)
+            by_day = data.resample("D", how=how)
 
     # Min and max per day.
     if vmin is None:
@@ -150,55 +162,61 @@ def yearplot(data, year=None, how='sum', vmin=None, vmax=None, cmap='Reds',
         # the figure or canvas background color.
         linecolor = ax.get_facecolor()
         if ColorConverter().to_rgba(linecolor)[-1] == 0:
-            linecolor = 'white'
+            linecolor = "white"
 
     # Filter on year.
     by_day = by_day[str(year)]
 
     # Add missing days.
     by_day = by_day.reindex(
-        pd.date_range(start=str(year), end=str(year + 1), freq='D')[:-1])
+        pd.date_range(start=str(year), end=str(year + 1), freq="D")[:-1]
+    )
 
     # Create data frame we can pivot later.
-    by_day = pd.DataFrame({'data': by_day,
-                           'fill': 1,
-                           'day': by_day.index.dayofweek,
-                           'week': by_day.index.week})
+    by_day = pd.DataFrame(
+        {
+            "data": by_day,
+            "fill": 1,
+            "day": by_day.index.dayofweek,
+            "week": by_day.index.week,
+        }
+    )
 
     # There may be some days assigned to previous year's last week or
     # next year's first week. We create new week numbers for them so
     # the ordering stays intact and week/day pairs unique.
-    by_day.loc[(by_day.index.month == 1) & (by_day.week > 50), 'week'] = 0
-    by_day.loc[(by_day.index.month == 12) & (by_day.week < 10), 'week'] \
-        = by_day.week.max() + 1
+    by_day.loc[(by_day.index.month == 1) & (by_day.week > 50), "week"] = 0
+    by_day.loc[(by_day.index.month == 12) & (by_day.week < 10), "week"] = (
+        by_day.week.max() + 1
+    )
 
     # Pivot data on day and week and mask NaN days.
-    plot_data = by_day.pivot('day', 'week', 'data').values[::-1]
+    plot_data = by_day.pivot("day", "week", "data").values[::-1]
     plot_data = np.ma.masked_where(np.isnan(plot_data), plot_data)
 
     # Do the same for all days of the year, not just those we have data for.
-    fill_data = by_day.pivot('day', 'week', 'fill').values[::-1]
+    fill_data = by_day.pivot("day", "week", "fill").values[::-1]
     fill_data = np.ma.masked_where(np.isnan(fill_data), fill_data)
 
     # Draw heatmap for all days of the year with fill color.
     ax.pcolormesh(fill_data, vmin=0, vmax=1, cmap=ListedColormap([fillcolor]))
 
     # Draw heatmap.
-    kwargs['linewidth'] = linewidth
-    kwargs['edgecolors'] = linecolor
+    kwargs["linewidth"] = linewidth
+    kwargs["edgecolors"] = linecolor
     ax.pcolormesh(plot_data, vmin=vmin, vmax=vmax, cmap=cmap, **kwargs)
 
     # Limit heatmap to our data.
     ax.set(xlim=(0, plot_data.shape[1]), ylim=(0, plot_data.shape[0]))
 
     # Square cells.
-    ax.set_aspect('equal')
+    ax.set_aspect("equal")
 
     # Remove spines and ticks.
-    for side in ('top', 'right', 'left', 'bottom'):
+    for side in ("top", "right", "left", "bottom"):
         ax.spines[side].set_visible(False)
-    ax.xaxis.set_tick_params(which='both', length=0)
-    ax.yaxis.set_tick_params(which='both', length=0)
+    ax.xaxis.set_tick_params(which="both", length=0)
+    ax.yaxis.set_tick_params(which="both", length=0)
 
     # Get indices for monthlabels.
     if monthticks is True:
@@ -206,7 +224,7 @@ def yearplot(data, year=None, how='sum', vmin=None, vmax=None, cmap='Reds',
     elif monthticks is False:
         monthticks = []
     elif isinstance(monthticks, int):
-        monthticks = range(len(monthlabels))[monthticks // 2::monthticks]
+        monthticks = range(len(monthlabels))[monthticks // 2 :: monthticks]
 
     # Get indices for daylabels.
     if dayticks is True:
@@ -214,24 +232,33 @@ def yearplot(data, year=None, how='sum', vmin=None, vmax=None, cmap='Reds',
     elif dayticks is False:
         dayticks = []
     elif isinstance(dayticks, int):
-        dayticks = range(len(daylabels))[dayticks // 2::dayticks]
+        dayticks = range(len(daylabels))[dayticks // 2 :: dayticks]
 
-    ax.set_xlabel('')
-    ax.set_xticks([by_day.ix[datetime.date(year, i + 1, 15)].week
-                   for i in monthticks])
-    ax.set_xticklabels([monthlabels[i] for i in monthticks], ha='center')
+    ax.set_xlabel("")
+    ax.set_xticks([by_day.ix[datetime.date(year, i + 1, 15)].week for i in monthticks])
+    ax.set_xticklabels([monthlabels[i] for i in monthticks], ha="center")
 
-    ax.set_ylabel('')
-    ax.yaxis.set_ticks_position('right')
+    ax.set_ylabel("")
+    ax.yaxis.set_ticks_position("right")
     ax.set_yticks([6 - i + 0.5 for i in dayticks])
-    ax.set_yticklabels([daylabels[i] for i in dayticks], rotation='horizontal',
-                       va='center')
+    ax.set_yticklabels(
+        [daylabels[i] for i in dayticks], rotation="horizontal", va="center"
+    )
 
     return ax
 
 
-def calendarplot(data, how='sum', yearlabels=True, yearascending=True, yearlabel_kws=None,
-                 subplot_kws=None, gridspec_kws=None, fig_kws=None, **kwargs):
+def calendarplot(
+    data,
+    how="sum",
+    yearlabels=True,
+    yearascending=True,
+    yearlabel_kws=None,
+    subplot_kws=None,
+    gridspec_kws=None,
+    fig_kws=None,
+    **kwargs
+):
     """
     Plot a timeseries as a calendar heatmap.
 
@@ -287,9 +314,14 @@ def calendarplot(data, how='sum', yearlabels=True, yearascending=True, yearlabel
     if not yearascending:
         years = years[::-1]
 
-    fig, axes = plt.subplots(nrows=len(years), ncols=1, squeeze=False,
-                             subplot_kw=subplot_kws,
-                             gridspec_kw=gridspec_kws, **fig_kws)
+    fig, axes = plt.subplots(
+        nrows=len(years),
+        ncols=1,
+        squeeze=False,
+        subplot_kw=subplot_kws,
+        gridspec_kw=gridspec_kws,
+        **fig_kws
+    )
     axes = axes.T[0]
 
     # We explicitely resample by day only once. This is an optimization.
@@ -297,16 +329,17 @@ def calendarplot(data, how='sum', yearlabels=True, yearascending=True, yearlabel
         by_day = data
     else:
         if _pandas_18:
-            by_day = data.resample('D').agg(how)
+            by_day = data.resample("D").agg(how)
         else:
-            by_day = data.resample('D', how=how)
+            by_day = data.resample("D", how=how)
 
     ylabel_kws = dict(
         fontsize=32,
-        color=kwargs.get('fillcolor', 'whitesmoke'),
-        fontweight='bold',
-        fontname='Arial',
-        ha='center')
+        color=kwargs.get("fillcolor", "whitesmoke"),
+        fontweight="bold",
+        fontname="Arial",
+        ha="center",
+    )
     ylabel_kws.update(yearlabel_kws)
 
     max_weeks = 0
