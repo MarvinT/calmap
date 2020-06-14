@@ -235,7 +235,7 @@ def yearplot(
         dayticks = range(len(daylabels))[dayticks // 2 :: dayticks]
 
     ax.set_xlabel("")
-    ax.set_xticks([by_day.ix[datetime.date(year, i + 1, 15)].week for i in monthticks])
+    ax.set_xticks([by_day.loc[datetime.date(year, i + 1, 15)].week for i in monthticks])
     ax.set_xticklabels([monthlabels[i] for i in monthticks], ha="center")
 
     ax.set_ylabel("")
