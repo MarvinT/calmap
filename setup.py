@@ -30,6 +30,7 @@ setup(
     version=distmeta["__version_info__"],
     description="Calendar heatmaps from Pandas time series data",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     author=distmeta["__author__"],
     author_email=distmeta["__contact__"],
     url=distmeta["__homepage__"],
