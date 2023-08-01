@@ -1,12 +1,10 @@
 import os
 from setuptools import setup
 
-install_requires = ["matplotlib", "numpy", "pandas"]
-
 try:
     with open("README.md") as readme:
         long_description = readme.read()
-except IOError:
+except OSError:
     long_description = "See https://pypi.python.org/pypi/calmap"
 
 # This is quite the hack, but we don't want to import our package from here
@@ -36,7 +34,8 @@ setup(
     license="MIT License",
     platforms=["any"],
     packages=["calmap"],
-    install_requires=install_requires,
+    install_requires=["matplotlib", "numpy", "pandas"],
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -44,9 +43,10 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Scientific/Engineering",
     ],
 )

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Calmap documentation build configuration file, created by
 # sphinx-quickstart on Thu Nov 26 16:51:51 2015.
 #
@@ -59,8 +57,8 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"Calmap"
-copyright = u"2015, %s" % calmap.__author__
+project = "Calmap"
+copyright = "2015, %s" % calmap.__author__
 author = calmap.__author__
 
 # The version info for the project you're documenting, acts as replacement for
@@ -236,7 +234,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "Calmap.tex", u"Calmap Documentation", u"Martijn Vermaat", "manual")
+    (master_doc, "Calmap.tex", "Calmap Documentation", "Martijn Vermaat", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -264,7 +262,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "calmap", u"Calmap Documentation", [author], 1)]
+man_pages = [(master_doc, "calmap", "Calmap Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -279,7 +277,7 @@ texinfo_documents = [
     (
         master_doc,
         "Calmap",
-        u"Calmap Documentation",
+        "Calmap Documentation",
         author,
         "Calmap",
         "One line description of project.",

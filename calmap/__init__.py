@@ -6,8 +6,6 @@ similar to GitHub's contributions calendar.
 """
 
 
-from __future__ import unicode_literals
-
 import calendar
 import datetime
 
