@@ -15,7 +15,7 @@ from matplotlib.colors import ColorConverter, ListedColormap
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from distutils.version import StrictVersion
+from packaging import version
 from dateutil.relativedelta import relativedelta
 from matplotlib.patches import Polygon
 
@@ -28,7 +28,7 @@ __author__ = "Marvin Thielk; Martijn Vermaat"
 __contact__ = "marvin.thielk@gmail.com, martijn@vermaat.name"
 __homepage__ = "https://github.com/MarvinT/calmap"
 
-_pandas_18 = StrictVersion(pd.__version__) >= StrictVersion("0.18")
+_pandas_18 = version.parse(pd.__version__) >= version.parse("0.18")
 
 
 def yearplot(
