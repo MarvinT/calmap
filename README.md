@@ -2,7 +2,7 @@
 ------------------------------------------------
 [![PyPI version](https://badge.fury.io/py/calmap.svg)](https://badge.fury.io/py/calmap)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/calmap.svg)
-[![Build Status](https://travis-ci.com/MarvinT/calmap.svg?branch=master)](https://travis-ci.com/MarvinT/calmap)
+[![GitHub Actions status](https://github.com/MarvinT/calmap/workflows/Test/badge.svg)](https://github.com/MarvinT/calmap/actions)
 [![Coverage Status](https://coveralls.io/repos/github/MarvinT/calmap/badge.svg?branch=master)](https://coveralls.io/github/MarvinT/calmap?branch=master)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

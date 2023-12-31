@@ -1,7 +1,7 @@
 import os
 from setuptools import setup
 
-install_requires = ["matplotlib", "numpy", "pandas"]
+install_requires = ["matplotlib", "packaging", "numpy", "pandas"]
 
 try:
     with open("README.md") as readme:

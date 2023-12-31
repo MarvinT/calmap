@@ -2,5 +2,6 @@
 build
 dist
 .cache
+.coverage
 *.egg-info
 .sonarlint
