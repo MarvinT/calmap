@@ -1,1 +1,3 @@
-include AUTHORS.rst CHANGES.rst LICENSE.rst README.rst
+include AUTHORS.rst CHANGELOG.md LICENSE.rst README.md
+recursive-include doc *.py *.rst Makefile requirements.txt
+recursive-include tests *.py requirements.txt

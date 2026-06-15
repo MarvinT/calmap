@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Calmap documentation build configuration file, created by
 # sphinx-quickstart on Thu Nov 26 16:51:51 2015.
 #
@@ -35,8 +33,12 @@ import calmap
 # The plot_directive extension is a modification of the one bundled with
 # matplotlib, adding a fig.tight_layout() call and setting bbox_inches
 # to 'tight' on the savefig call.
-sys.path.insert(0, os.path.abspath("sphinxext"))
-extensions = ["plot_directive", "sphinx.ext.autodoc", "sphinx.ext.viewcode", "numpydoc"]
+extensions = [
+    "matplotlib.sphinxext.plot_directive",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "numpydoc",
+]
 
 # Configuration for plot_directive.
 plot_include_source = True
@@ -56,11 +58,11 @@ source_suffix = ".rst"
 # source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = "index"
+root_doc = "index"
 
 # General information about the project.
-project = u"Calmap"
-copyright = u"2015, %s" % calmap.__author__
+project = "Calmap"
+copyright = "2015-2026, %s" % calmap.__author__
 author = calmap.__author__
 
 # The version info for the project you're documenting, acts as replacement for
@@ -77,7 +79,7 @@ release = calmap.__version__
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -154,8 +156,6 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = [".static"]
-
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
@@ -236,7 +236,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "Calmap.tex", u"Calmap Documentation", u"Martijn Vermaat", "manual")
+    (root_doc, "Calmap.tex", "Calmap Documentation", "Martijn Vermaat", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -264,7 +264,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "calmap", u"Calmap Documentation", [author], 1)]
+man_pages = [(root_doc, "calmap", "Calmap Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -277,9 +277,9 @@ man_pages = [(master_doc, "calmap", u"Calmap Documentation", [author], 1)]
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        master_doc,
+        root_doc,
         "Calmap",
-        u"Calmap Documentation",
+        "Calmap Documentation",
         author,
         "Calmap",
         "One line description of project.",

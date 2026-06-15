@@ -1,6 +1,10 @@
 *.pyc
+__pycache__/
 build
 dist
 .cache
+.coverage
+.pytest_cache/
+.venv/
 *.egg-info
 .sonarlint

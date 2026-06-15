@@ -61,7 +61,7 @@ To install the latest release via PyPI using pip::
     pip install calmap
 
 The latest development version `can be found on GitHub
-<https://github.com/martijnvermaat/calmap>`_.
+<https://github.com/MarvinT/calmap>`_.
 
 
 .. _api:

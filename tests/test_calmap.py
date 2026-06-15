@@ -3,11 +3,10 @@ Tests for calmap.
 """
 
 
-from __future__ import unicode_literals
-
 import numpy as np
 
 np.random.seed(sum(map(ord, "calmap")))
+import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
 
@@ -30,7 +29,8 @@ def test_yearplot(events):
     By default, `yearplot` plots the first year and sums the values per day.
     """
     ax = calmap.yearplot(events)
-    return ax.figure
+    assert len(ax.collections) == 2
+    plt.close(ax.figure)
 
 
 def test_yearplot_year(events):
@@ -38,7 +38,8 @@ def test_yearplot_year(events):
     We can choose which year is plotted with the `year` keyword argment.
     """
     ax = calmap.yearplot(events, year=2015)
-    return ax.figure
+    assert ax.get_xlim()[1] >= 52
+    plt.close(ax.figure)
 
 
 def test_yearplot_cmap_fillcolor_linewidth(events):
@@ -47,7 +48,8 @@ def test_yearplot_cmap_fillcolor_linewidth(events):
     a darker fill color for days without data and remove the lines.
     """
     ax = calmap.yearplot(events, cmap="YlGn", fillcolor="grey", linewidth=0)
-    return ax.figure
+    assert ax.collections[1].get_linewidths()[0] == 0
+    plt.close(ax.figure)
 
 
 def test_yearplot_monthticks_daylabels_dayticks(events):
@@ -58,7 +60,19 @@ def test_yearplot_monthticks_daylabels_dayticks(events):
     ax = calmap.yearplot(
         events, monthticks=3, daylabels="MTWTFSS", dayticks=[0, 2, 4, 6]
     )
-    return ax.figure
+    assert [label.get_text() for label in ax.get_xticklabels()] == [
+        "Feb",
+        "May",
+        "Aug",
+        "Nov",
+    ]
+    assert [label.get_text() for label in ax.get_yticklabels()] == [
+        "M",
+        "W",
+        "F",
+        "S",
+    ]
+    plt.close(ax.figure)
 
 
 def test_calendarplot(events):
@@ -66,11 +80,45 @@ def test_calendarplot(events):
     With `calendarplot` we can plot several years in one figure.
     """
     fig, axes = calmap.calendarplot(events)
-    return fig
+    assert len(axes) == 2
+    plt.close(fig)
+
 
 def test_calendarplot_columns(events):
     """
     We can specify a number of columns.
     """
     fig, axes = calmap.calendarplot(events, ncols=2)
-    return fig
+    assert axes.shape == (2,)
+    plt.close(fig)
+
+
+def test_yearplot_aggregates_values_by_calendar_day():
+    events = pd.Series(
+        [1.0, 2.0],
+        index=pd.to_datetime(["2025-01-01 08:00", "2025-01-01 16:00"]),
+    )
+
+    ax = calmap.yearplot(events)
+
+    assert 3.0 in ax.collections[1].get_array().compressed()
+    plt.close(ax.figure)
+
+
+def test_yearplot_uses_custom_month_labels(events):
+    labels = [f"M{i}" for i in range(1, 13)]
+
+    ax = calmap.yearplot(events, monthlabels=labels, monthticks=[0, 6, 11])
+
+    assert [label.get_text() for label in ax.get_xticklabels()] == [
+        "M1",
+        "M7",
+        "M12",
+    ]
+    plt.close(ax.figure)
+
+
+@pytest.mark.parametrize("ncols", [0, -1, 1.5, True])
+def test_calendarplot_rejects_invalid_ncols(events, ncols):
+    with pytest.raises(ValueError, match="positive integer"):
+        calmap.calendarplot(events, ncols=ncols)

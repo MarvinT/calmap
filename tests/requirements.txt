@@ -1,4 +1,2 @@
-pytest>=4.6
-coverage
-pytest-cov
-python-coveralls
+pytest>=8
+pytest-cov>=5

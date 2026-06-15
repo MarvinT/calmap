@@ -6,29 +6,41 @@ similar to GitHub's contributions calendar.
 """
 
 
-from __future__ import unicode_literals
-
 import calendar
 import datetime
+import math
 
 from matplotlib.colors import ColorConverter, ListedColormap
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from distutils.version import StrictVersion
 from dateutil.relativedelta import relativedelta
 from matplotlib.patches import Polygon
 
-__version_info__ = ("0", "0", "11")
-__date__ = "22 Nov 2018"
-
-
-__version__ = ".".join(__version_info__)
+__version__ = "0.0.12"
+__version_info__ = tuple(__version__.split("."))
+__date__ = "15 Jun 2026"
 __author__ = "Marvin Thielk; Martijn Vermaat"
 __contact__ = "marvin.thielk@gmail.com, martijn@vermaat.name"
 __homepage__ = "https://github.com/MarvinT/calmap"
 
-_pandas_18 = StrictVersion(pd.__version__) >= StrictVersion("0.18")
+
+def _daily_aggregate(data, how):
+    if how is None:
+        return data
+    return data.resample("D").agg(how)
+
+
+def _tick_indices(ticks, labels):
+    if ticks is True:
+        return range(len(labels))
+    if ticks is False:
+        return []
+    if isinstance(ticks, int):
+        if ticks <= 0:
+            raise ValueError("tick intervals must be positive")
+        return range(len(labels))[ticks // 2 :: ticks]
+    return ticks
 
 
 def yearplot(
@@ -139,18 +151,15 @@ def yearplot(
                         dayticks=[0, 2, 4, 6])
 
     """
+    if not isinstance(data.index, pd.DatetimeIndex):
+        raise TypeError("data must be indexed by a pandas DatetimeIndex")
+    if data.empty:
+        raise ValueError("data must contain at least one value")
+
     if year is None:
         year = data.index.sort_values()[0].year
 
-    if how is None:
-        # Assume already sampled by day.
-        by_day = data
-    else:
-        # Sample by day.
-        if _pandas_18:
-            by_day = data.groupby(level=0).agg(how).squeeze()
-        else:
-            by_day = data.resample("D", how=how)
+    by_day = _daily_aggregate(data, how)
 
     # Min and max per day.
     if vmin is None:
@@ -172,13 +181,9 @@ def yearplot(
         if ColorConverter().to_rgba(linecolor)[-1] == 0:
             linecolor = "white"
 
-    # Filter on year.
-    by_day = by_day[str(year)]
-
-    # Add missing days.
-    by_day = by_day.reindex(
-        pd.date_range(start=str(year), end=str(year + 1), freq="D")[:-1]
-    )
+    # Select the requested year and add missing days.
+    year_days = pd.date_range(start=str(year), end=str(year + 1), freq="D")[:-1]
+    by_day = by_day.reindex(year_days)
 
     # Create data frame we can pivot later.
     by_day = pd.DataFrame(
@@ -186,7 +191,7 @@ def yearplot(
             "data": by_day,
             "fill": 1,
             "day": by_day.index.dayofweek,
-            "week": by_day.index.isocalendar().week,
+            "week": by_day.index.isocalendar().week.to_numpy(),
         }
     )
 
@@ -226,27 +231,13 @@ def yearplot(
     ax.xaxis.set_tick_params(which="both", length=0)
     ax.yaxis.set_tick_params(which="both", length=0)
 
-    # Get indices for monthlabels.
-    if monthticks is True:
-        monthticks = range(len(monthlabels))
-    elif monthticks is False:
-        monthticks = []
-    elif isinstance(monthticks, int):
-        monthticks = range(len(monthlabels))[monthticks // 2 :: monthticks]
-
-    # Get indices for daylabels.
-    if dayticks is True:
-        dayticks = range(len(daylabels))
-    elif dayticks is False:
-        dayticks = []
-    elif isinstance(dayticks, int):
-        dayticks = range(len(daylabels))[dayticks // 2 :: dayticks]
+    monthticks = list(_tick_indices(monthticks, monthlabels))
+    dayticks = list(_tick_indices(dayticks, daylabels))
 
     ax.set_xlabel("")
-    timestamps = []
 
     # Month borders
-    xticks, labels = [], []
+    xticks = []
     for month in range(1, 13):
         first = datetime.datetime(year, month, 1)
         last = first + relativedelta(months=1, days=-1)
@@ -268,7 +259,6 @@ def yearplot(
         ]
 
         xticks.append(x0 + (x1 - x0 + 1) / 2)
-        labels.append(first.strftime("%b"))
         if monthly_border:
             poly = Polygon(
                 P,
@@ -280,8 +270,8 @@ def yearplot(
             )
             ax.add_artist(poly)
 
-    ax.set_xticks(xticks)
-    ax.set_xticklabels(labels)
+    ax.set_xticks([xticks[i] for i in monthticks])
+    ax.set_xticklabels([monthlabels[i] for i in monthticks])
     ax.set_ylabel("")
     ax.yaxis.set_ticks_position("right")
     ax.set_yticks([6 - i + 0.5 for i in dayticks])
@@ -372,11 +362,9 @@ def calendarplot(
     if not yearascending:
         years = years[::-1]
 
-    if ncols == 1:
-        nrows = len(years)
-    else:
-        import math
-        nrows = math.ceil(len(years) / ncols)
+    if not isinstance(ncols, int) or isinstance(ncols, bool) or ncols < 1:
+        raise ValueError("ncols must be a positive integer")
+    nrows = math.ceil(len(years) / ncols)
 
     fig, axes = plt.subplots(
         nrows=nrows,
@@ -387,15 +375,10 @@ def calendarplot(
         **fig_kws
     )
     axes = axes.flatten()
-    plt.suptitle(fig_suptitle)
+    if fig_suptitle is not None:
+        fig.suptitle(fig_suptitle)
     # We explicitely resample by day only once. This is an optimization.
-    if how is None:
-        by_day = data
-    else:
-        if _pandas_18:
-            by_day = data.groupby(level=0).agg(how).squeeze()
-        else:
-            by_day = data.resample("D", how=how)
+    by_day = _daily_aggregate(data, how)
 
     ylabel_kws = dict(
         fontsize=32,
@@ -417,7 +400,7 @@ def calendarplot(
 
     # If we have multiple columns, make sure any extra axes are removed
     if ncols != 1:
-        for ax in axes[len(years):]:
+        for ax in axes[len(years) :]:
             ax.set_axis_off()
 
     # In a leap year it might happen that we have 54 weeks (e.g., 2012).

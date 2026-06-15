@@ -1,28 +1,38 @@
-# Calendar heatmaps from Pandas time series data
-------------------------------------------------
-[![PyPI version](https://badge.fury.io/py/calmap.svg)](https://badge.fury.io/py/calmap)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/calmap.svg)
-[![Build Status](https://travis-ci.com/MarvinT/calmap.svg?branch=master)](https://travis-ci.com/MarvinT/calmap)
-[![Coverage Status](https://coveralls.io/repos/github/MarvinT/calmap/badge.svg?branch=master)](https://coveralls.io/github/MarvinT/calmap?branch=master)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+# Calendar heatmaps from pandas time series data
+
+[![PyPI version](https://img.shields.io/pypi/v/calmap.svg)](https://pypi.org/project/calmap/)
+[![Python versions](https://img.shields.io/pypi/pyversions/calmap.svg)](https://pypi.org/project/calmap/)
+[![CI](https://github.com/MarvinT/calmap/actions/workflows/ci.yml/badge.svg)](https://github.com/MarvinT/calmap/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://pepy.tech/badge/calmap)](https://pepy.tech/project/calmap)
 
-Plot [Pandas](http://pandas.pydata.org/) time series data sampled by day in
+Plot [pandas](https://pandas.pydata.org/) time series data sampled by day in
 a heatmap per calendar year, similar to GitHub's contributions plot, using
-[matplotlib](http://matplotlib.org/).
-
-![alt text](https://pythonhosted.org/calmap/_images/index-2.png "Example calendar heatmap")
-
-## Usage
---------
-
-See the [documentation](https://pythonhosted.org/calmap).
-
+[matplotlib](https://matplotlib.org/).
 
 ## Installation
----------------
 
-To install the latest release via PyPI using pip::
+```console
+python -m pip install calmap
+```
 
-    pip install calmap
+## Usage
+
+```python
+import calmap
+import pandas as pd
+
+events = pd.Series(
+    [1, 2, 3],
+    index=pd.to_datetime(["2025-01-01", "2025-01-02", "2025-02-01"]),
+)
+calmap.yearplot(events, year=2025)
+```
+
+Use `calmap.calendarplot(events)` to draw multiple years. See the
+[API documentation](https://github.com/MarvinT/calmap/blob/master/doc/index.rst)
+for all options.
+
+The canonical source repository is
+[`MarvinT/calmap`](https://github.com/MarvinT/calmap). The original
+`martijnvermaat/calmap` repository points here for continued maintenance.
